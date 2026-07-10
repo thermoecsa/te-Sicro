@@ -8,19 +8,27 @@
     <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pocketbase@0.27.0/dist/pocketbase.umd.js"></script>
+    <script src="js/te-auth.js"></script>
 
     <script type="module">
 
         import { inicia } from '/index.js';
-       
-        window.addEventListener("load", () => {
+
+        window.addEventListener("load", async () => {
 
          const container1 = document.getElementById('editorEstados');
          const container2 = document.getElementById('editorAireHumedo');
          const container3 = document.getElementById('diagramaSicrometrico');
 
          inicia(container1, container2, container3);
- 
+
+         // Sincronización con la nube (PocketBase): si se abre con ?proyecto=<id> (enlace
+         // desde "Mis Proyectos" del hub) se carga PRIMERO, y solo después se empieza a
+         // escuchar cambios — así evitamos crear un proyecto duplicado en la nube.
+         await cargarProyectoDesdeNubeSiProcede();
+         document.body.addEventListener('input', programarSincronizacionAutomatica);
+         document.body.addEventListener('change', programarSincronizacionAutomatica);
         }
         );
     </script>
@@ -56,6 +64,7 @@
         </div>
     </header>
     <p id="estado-proyecto-sicro" class="te-estado-proyecto"></p>
+    <p id="estado-guardado-nube" class="te-estado-proyecto"></p>
     <main>
         <section id="contenedorPrincipal">
             <!-- Primera Columna: 3 tarjetas apiladas, todo visible sin pestañas -->
@@ -272,12 +281,15 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            const nombreArchivo = (proyecto.nombreProyecto || 'proyecto-sicro').trim().replace(/[^a-z0-9]+/gi, '_');
+            // Quita acentos antes de filtrar (si no, "Sicrométrico" perdía la "é" y salía "Sicrom_trico")
+            const sinAcentos = (proyecto.nombreProyecto || 'proyecto-sicro').trim().normalize('NFD').replace(/[̀-ͯ]/g, '');
+            const nombreArchivo = sinAcentos.replace(/[^a-z0-9]+/gi, '_');
             a.download = `${nombreArchivo || 'proyecto-sicro'}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            mostrarEstadoProyectoSicro(`✓ Proyecto "${proyecto.nombreProyecto || ''}" descargado (${a.download}).`, false);
         }
 
         function aplicarProyectoSicro(proyecto) {
@@ -330,6 +342,89 @@
             reader.readAsText(file);
             e.target.value = '';
         });
+
+        // ── Sincronización automática con la nube (PocketBase): sin botón, sin interruptor.
+        // Mientras haya sesión iniciada (compartida con te-apps/te-Pools vía cookie), cada
+        // cambio se guarda solo, con un pequeño retraso tras el último cambio. El usuario
+        // borra los proyectos que no quiere desde "Mis Proyectos" en el hub. Mismo patrón
+        // que usa te-Pools, reutilizando construirProyectoSicro()/aplicarProyectoSicro().
+        let idProyectoNubeActual = null;
+        let temporizadorGuardadoAutomatico = null;
+
+        function mostrarEstadoGuardadoNube(mensaje, esError) {
+            const el = document.getElementById('estado-guardado-nube');
+            if (!el) return;
+            el.textContent = mensaje;
+            el.style.color = esError ? '#dc2626' : '#059669';
+            clearTimeout(mostrarEstadoGuardadoNube._t);
+            mostrarEstadoGuardadoNube._t = setTimeout(() => { el.textContent = ''; }, 4000);
+        }
+
+        // Al crear un proyecto nuevo (todavía sin id en la nube), evita chocar con nombres ya
+        // usados por el mismo usuario añadiendo " 2", " 3"... hasta encontrar uno libre.
+        async function generarNombreUnico(nombreBase, usuarioId) {
+            const existentes = await teAuthPb.collection('proyectos').getFullList({
+                filter: teAuthPb.filter('usuario = {:uid} && app = {:app}', { uid: usuarioId, app: 'te-sicro' }),
+                fields: 'nombre'
+            });
+            const nombresUsados = new Set(existentes.map(p => p.nombre));
+            if (!nombresUsados.has(nombreBase)) return nombreBase;
+            let n = 2;
+            while (nombresUsados.has(`${nombreBase} ${n}`)) n++;
+            return `${nombreBase} ${n}`;
+        }
+
+        async function sincronizarProyectoEnNube() {
+            const usuario = teAuthUsuarioActual();
+            if (!usuario || !window.__sicroApp) return; // sin sesión: no hay dónde guardar, se ignora en silencio
+
+            const proyecto = construirProyectoSicro();
+            let nombre = (proyecto.nombreProyecto || 'Proyecto sin nombre').trim();
+
+            mostrarEstadoGuardadoNube('Guardando...', false);
+            try {
+                if (!idProyectoNubeActual) {
+                    nombre = await generarNombreUnico(nombre, usuario.id);
+                    if (nombre !== proyecto.nombreProyecto) {
+                        proyecto.nombreProyecto = nombre;
+                        document.getElementById('inp-nombre-proyecto').value = nombre;
+                    }
+                }
+
+                const registro = { usuario: usuario.id, app: 'te-sicro', nombre: nombre, datos: proyecto };
+
+                if (idProyectoNubeActual) {
+                    await teAuthPb.collection('proyectos').update(idProyectoNubeActual, registro);
+                } else {
+                    const creado = await teAuthPb.collection('proyectos').create(registro);
+                    idProyectoNubeActual = creado.id;
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('proyecto', idProyectoNubeActual);
+                    window.history.replaceState({}, '', url);
+                }
+                mostrarEstadoGuardadoNube('✓ Sincronizado con la nube.', false);
+            } catch (err) {
+                mostrarEstadoGuardadoNube('No se pudo sincronizar con la nube.', true);
+            }
+        }
+
+        function programarSincronizacionAutomatica() {
+            clearTimeout(temporizadorGuardadoAutomatico);
+            temporizadorGuardadoAutomatico = setTimeout(sincronizarProyectoEnNube, 1500);
+        }
+
+        // Deep-link desde "Mis Proyectos" en el hub: ?proyecto=<id> trae el proyecto guardado
+        async function cargarProyectoDesdeNubeSiProcede() {
+            const idProyecto = new URLSearchParams(window.location.search).get('proyecto');
+            if (!idProyecto) return;
+            try {
+                const registro = await teAuthPb.collection('proyectos').getOne(idProyecto);
+                aplicarProyectoSicro(registro.datos);
+                idProyectoNubeActual = registro.id;
+            } catch (err) {
+                mostrarEstadoProyectoSicro('No se pudo cargar el proyecto solicitado (¿ya no existe o no tienes acceso?).', true);
+            }
+        }
     </script>
 </body>
 
