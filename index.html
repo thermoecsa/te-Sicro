@@ -270,8 +270,17 @@
                 visible: e.getVisible(),
                 icon: e.getIcon()
             }));
+            // Los procesos referencian estados por nombre (no por objeto): al recargar el
+            // proyecto los estados se recrean desde cero, así que guardar la referencia
+            // directa no serviría de nada — hay que reengancharlos por nombre al cargar.
+            const procesos = procesosData.map((p) => ({
+                origen: p.origen.getName(),
+                destino: p.destino.getName(),
+                color: p.color,
+                estilo: p.estilo
+            }));
             const config = JSON.parse(JSON.stringify(window.__sicroApp.configSicro));
-            return { tipo: 'proyecto-sicro', version: 1, nombreProyecto: nombre, estados: estados, config: config };
+            return { tipo: 'proyecto-sicro', version: 1, nombreProyecto: nombre, estados: estados, procesos: procesos, config: config };
         }
 
         function descargarProyectoSicro() {
@@ -324,6 +333,19 @@
                 nuevo.setVisible(e.visible);
                 nuevo.setIcon(e.icon);
             });
+
+            // Reengancha los procesos guardados a los estados recién creados, buscándolos
+            // por nombre (los objetos originales ya no existen tras el sm.states.length = 0)
+            const estadosPorNombre = new Map(sm.getStates().map((s) => [s.getName(), s]));
+            procesosData = (proyecto.procesos || [])
+                .map((p) => ({
+                    origen: estadosPorNombre.get(p.origen),
+                    destino: estadosPorNombre.get(p.destino),
+                    color: p.color,
+                    estilo: p.estilo
+                }))
+                .filter((p) => p.origen && p.destino);
+
             window.__sicroApp.renderAll();
             mostrarEstadoProyectoSicro(`✓ Proyecto "${proyecto.nombreProyecto || ''}" cargado.`, false);
         }
