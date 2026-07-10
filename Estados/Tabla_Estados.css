@@ -1,0 +1,262 @@
+/* La tabla ahora tiene muchas columnas (7 propiedades + acciones): que crezca según su
+   contenido y se desplace en horizontal dentro de la tarjeta en vez de comprimirse */
+.tabla-estados table {
+    table-layout: auto;
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+}
+
+/* Estilos para las cabeceras y celdas */
+.tabla-estados th{
+    padding: 4px 6px;
+    background-color: #64748b;
+    color: white;
+    font-size: 11px;
+    white-space: nowrap;
+ }
+
+.tabla-estados th.th-unidad {
+    background-color: #94a3b8;
+    font-weight: normal;
+    font-size: 9.5px;
+}
+
+ /* Estilos para las cabeceras y celdas */
+.tabla-estados td {
+    padding: 4px 6px;
+    text-align: center;
+    font-size: 12px;
+
+ }
+
+/* Celda de una propiedad (checkbox + valor) */
+.tabla-estados .var-cell {
+    display: table-cell;
+    white-space: nowrap;
+    background: #f8fafc;
+}
+
+.tabla-estados .var-cell-activa {
+    background: #f8eaec;
+}
+
+.tabla-estados .var-check {
+    vertical-align: middle;
+    margin-right: 2px;
+}
+
+.tabla-estados .var-valor {
+    width: 52px;
+    text-align: right;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2px 3px;
+    font-size: 11px;
+}
+
+.tabla-estados .var-valor:disabled {
+    background: transparent;
+    border-color: transparent;
+    color: #64748b;
+}
+
+.tabla-estados .val-p {
+    width: 60px;
+    text-align: right;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2px 3px;
+    font-size: 11px;
+}
+
+/* Estilos para las filas alternas */
+.tabla-estados tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tabla-estados tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+/* Fila seleccionada y efectos de hover */
+.tabla-estados tbody tr.selected {
+    background-color: #cbd5e1;
+    color: #0f172a;
+    font-weight: bold;
+}
+
+.tabla-estados tbody tr:hover {
+    background-color: #f1f5f9;
+}
+
+.tabla-estados tbody tr.selected:hover {
+    background-color: #cbd5e1;
+}
+
+/* ── Botones de icono (genéricos) ─────────────────────────── */
+.tabla-estados .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 4px;
+    cursor: pointer;
+    color: #64748b;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 0;
+}
+
+.tabla-estados .icon-btn:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #334155;
+}
+
+.tabla-estados .icon-btn:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Botón eliminar — tono rojo corporativo al hover */
+.tabla-estados .delete-btn:hover {
+    background: #f8eaec;
+    border-color: #9D162E;
+    color: #9D162E;
+}
+
+/* Botón de visibilidad */
+.tabla-estados .eyes {
+    color: #64748b;
+}
+.tabla-estados .eyes:hover {
+    color: #9D162E;
+    background: #f8eaec;
+    border-color: #9D162E;
+}
+
+/* Celda de reordenar: botones apilados verticalmente */
+.tabla-estados .reorder-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+/* ── Icon picker ──────────────────────────────────────────── */
+.icon-picker-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-picker-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 4px 6px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.icon-picker-btn:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+}
+
+.icon-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(4, 32px);
+    gap: 4px;
+    z-index: 1000;
+    width: max-content;
+}
+
+.icon-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #334155;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    padding: 0;
+}
+
+.icon-option:hover {
+    background: #f8eaec;
+    border-color: #9D162E;
+    color: #9D162E;
+}
+
+.icon-option.icon-selected {
+    background: #f8eaec;
+    border-color: #9D162E;
+    color: #9D162E;
+}
+
+/* Etiqueta Unicode en el botón principal del picker */
+.icon-picker-label {
+    font-size: 16px;
+    line-height: 1;
+    font-family: 'Segoe UI Symbol', 'Arial Unicode MS', sans-serif;
+}
+
+/* Etiqueta Unicode en cada opción del dropdown */
+.icon-shape-label {
+    font-size: 16px;
+    line-height: 1;
+    font-family: 'Segoe UI Symbol', 'Arial Unicode MS', sans-serif;
+    pointer-events: none;
+}
+
+/* Lucide SVG icons — heredan color del padre */
+.lucide-icon {
+    display: inline-block;
+    vertical-align: middle;
+    pointer-events: none;
+}
+
+/* ── Botón Añadir Estado ─────────────────────────────────── */
+#add-state-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 6px 14px;
+    background: #9D162E;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 4px rgba(157,22,46,0.25);
+}
+
+#add-state-btn:hover {
+    background: #7a1024;
+    box-shadow: 0 3px 10px rgba(157,22,46,0.35);
+}
+

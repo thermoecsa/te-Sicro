@@ -1,0 +1,42 @@
+/* Asegura que el contenedor de la tabla ocupe todo el ancho disponible */
+.editor-aireHumedo2 {
+  width: 100%;            /* El contenedor ocupa todo el ancho disponible */
+  box-sizing: border-box; /* Incluye padding y bordes en el ancho total */
+  overflow-x: auto;       /* Permite scroll horizontal si es necesario */
+}
+
+/* Configuración de la tabla */
+.editor-aireHumedo2 table {
+  width: 100%;                /* La tabla ocupa todo el ancho del contenedor */
+  border-collapse: collapse;  /* Elimina espacios entre las celdas */
+  table-layout: fixed;        /* Las celdas ocupan el mismo ancho */
+}
+
+/* Estilo para celdas */
+.editor-aireHumedo2 th, 
+.editor-aireHumedo2 td {
+  border: 1px solid #ddd;    /* Bordes visibles */
+  padding: 10px;             /* Espaciado interno */
+  text-align: center;        /* Texto centrado */
+  vertical-align: middle;    /* Centrar contenido verticalmente */
+  word-wrap: break-word;     /* Permite el ajuste de palabras largas */
+}
+
+/* Cabecera de la tabla */
+.editor-aireHumedo2 th {
+  background: rgb(110, 110, 110);
+  color: white;
+}
+
+/* Inputs en las celdas */
+.editor-aireHumedo2 input[type="number"] {
+  width: 100%;               /* Ocupa todo el ancho de la celda */
+  box-sizing: border-box;    /* Incluye padding y bordes */
+  text-align: right;
+  color: brown;
+}
+
+/* Alternar colores en filas */
+.editor-aireHumedo2 tr:nth-child(2n) {
+  background: #f9f9f9;       /* Color alternativo para filas pares */
+}

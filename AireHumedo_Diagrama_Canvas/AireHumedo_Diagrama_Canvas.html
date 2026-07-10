@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama Sicrométrico</title>
+
+    <link rel="stylesheet" href="/AireHumedo_Diagrama_Canvas/AireHumedo_Diagrama_Canvas.css">
+
+    <script type="module">
+        import { iniciaDiagrama } from './index.js';
+
+        window.addEventListener("load", () => {
+         const container = document.getElementById('contenedorCanvas');
+         iniciaDiagrama(container);
+        }
+        );
+    </script>
+</head>
+
+<body style="margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; width: 100vw; overflow: hidden;">
+
+    <header style="background-color: #f8f8f8; padding: 10px; text-align: center;">
+        <h1 style="color:brown">DIAGRAMA SICROMÉTRICO</h1>
+    </header>
+
+    <main style="flex: 1; display: flex; overflow: hidden;">
+        <section id="contenedorCanvas" class="ContenedorCanvas" style="flex: 1;"></section>
+    </main>
+
+    <footer style="background-color: #f8f8f8; padding: 10px; text-align: left;">
+        <p>© 2024 - Aplicación diagráma sicrométrico</p>
+    </footer>
+
+</body>

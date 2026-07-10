@@ -1,0 +1,295 @@
+/* Paleta minimalista: rojo corporativo como único acento + escala de grises neutra */
+:root {
+    --brand: #9D162E;
+    --brand-dark: #7a1024;
+    --gray-cabecera: #64748b;
+    --gray-texto: #1e293b;
+    --gray-texto-suave: #64748b;
+    --gray-borde: #e2e8f0;
+    --gray-borde-fuerte: #cbd5e1;
+    --gray-fondo: #f8fafc;
+}
+
+/* Configuración general */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Asegura que el cuerpo ocupe toda la altura */
+}
+
+/* Cabecera: título a la izquierda, nombre de proyecto + cargar/descargar a la derecha */
+.te-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 2rem;
+    background: #e2e8f0;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+.te-header-proyecto {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.te-legal-footer {
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    border-top: 1px solid #e2e8f0;
+    background: white;
+}
+
+.te-legal-footer p {
+    margin: 0.1rem 0;
+}
+
+.te-header-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: #475569;
+}
+
+.te-header-proyecto label {
+    font-size: 0.68rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    flex-shrink: 0;
+}
+
+.te-header-proyecto input[type="text"] {
+    width: 220px;
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #1e293b;
+}
+
+.te-header-proyecto input[type="text"]:focus {
+    outline: none;
+    border-color: #9D162E;
+}
+
+.te-proyecto-botones {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.te-proyecto-botones button {
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    padding: 0.55rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: background 0.15s ease;
+}
+
+.te-proyecto-botones button:hover {
+    background: #f1f5f9;
+}
+
+.te-estado-proyecto {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-height: 1.2rem;
+    margin: 0.4rem 0 0;
+}
+
+/* Contenedor principal que contiene ambas columnas */
+#contenedorPrincipal {
+    display: flex;
+    height: calc(100vh - 8rem); /* Descuenta cabecera + barra de proyecto + línea de estado */
+    overflow: hidden; /* Evita el desbordamiento del contenedor */
+}
+
+/* Configuración de las columnas */
+.column {
+    display: flex;
+    flex-direction: column; /* Permite colocar los editores en columna */
+}
+
+/* Primera columna: 3 tarjetas apiladas (Estados / Procesos / Detalle) */
+.column:first-child {
+    flex: 0 0 32%; /* Primera columna ocupa el 32% del ancho */
+    background-color: #f1f5f9;
+    overflow: hidden; /* Para que no se desborde el contenido */
+    transition: width 0.2s ease-in-out; /* Animación de transición */
+    gap: 0.65rem;
+    padding: 0.65rem;
+}
+
+/* Segunda columna (Diagrama Sicrométrico) */
+.column:last-child {
+    flex: 1; /* Segunda columna ocupa el resto */
+    display: flex;
+    flex-direction: column; /* Asegura que los elementos dentro se organicen en columna */
+    min-width: 300px; /* Establece un ancho mínimo para evitar que la columna se reduzca demasiado */
+    overflow: hidden; /* Evita que se desborde el contenido */
+}
+
+/* Tarjetas de la columna izquierda: Estados / Procesos / Detalle */
+.te-panel[hidden] {
+    display: none;
+}
+
+.te-panel {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 0 0 auto;
+    max-height: 220px;
+}
+
+.te-panel-detalle {
+    flex: 1 1 auto;
+    max-height: none;
+    min-height: 220px;
+}
+
+/* Con el panel de Detalle oculto, Estados y Procesos se reparten todo el alto disponible */
+.te-panel-estados,
+.te-panel-procesos {
+    flex: 1 1 50%;
+    max-height: none;
+    min-height: 0;
+}
+
+.te-panel-titulo {
+    margin: 0;
+    padding: 0.55rem 1rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: white;
+    background: #9D162E;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.te-panel-btn {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 0.35rem;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: normal;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.te-panel-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.te-panel-cuerpo {
+    flex: 1;
+    overflow: auto;
+    padding: 0.6rem;
+    background: #f9fafb;
+}
+
+.te-panel-vacio {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 1rem 0;
+    margin: 0;
+}
+
+.tabla-procesos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.tabla-procesos th {
+    padding: 4px 6px;
+    background: var(--gray-cabecera);
+    color: white;
+    font-size: 10.5px;
+    white-space: nowrap;
+}
+
+.tabla-procesos td {
+    padding: 4px 6px;
+    text-align: center;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.tabla-procesos select {
+    font-size: 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+}
+
+.tabla-procesos .proceso-tipo {
+    font-weight: 600;
+    color: #9D162E;
+}
+
+.tabla-procesos .btn-borrar-proceso {
+    background: transparent;
+    border: none;
+    color: var(--brand);
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.tabla-procesos .btn-borrar-proceso:hover {
+    color: var(--brand-dark);
+}
+
+/* Estilo para el diagrama psicrométrico */
+#diagramaSicrometrico {
+    flex: 1; /* Ocupa el alto restante */
+    margin: 10px;
+    border: 1px solid var(--gray-borde-fuerte);
+    border-radius: 5px;
+    background: var(--gray-fondo);
+    padding: 10px;
+    overflow: auto; /* Barra de desplazamiento si el contenido crece */
+}
+
+/* Estilo para el divisor (redimensionable) */
+.resizer {
+    cursor: ew-resize; /* Cursor para indicar que se puede redimensionar */
+    background-color: var(--gray-cabecera);
+    width: 10px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    min-width: 10px; /* Asegura que el divisor tenga un tamaño mínimo */
+}

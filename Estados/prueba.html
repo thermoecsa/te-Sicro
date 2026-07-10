@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- galería de iconos -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <title>Gestión de Estados</title>
+
+    <script type="module">
+        import { iniciaTablaEstados } from './index.js';
+
+        window.addEventListener("load", () => {
+         const container = document.getElementById('contenedorPrincipal');
+         iniciaTablaEstados(container);
+        }
+        );
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>TABLA DE GESTIÓN DE ESTADOS</h1>
+    </header>
+
+    <main>
+        <section style='width:100%' id='contenedorPrincipal'>
+            <!-- Contenedor donde TableRenderer renderizará la tabla y el botón -->
+        </section>
+    </main>
+
+    <footer>
+        <p style='color: #9D162E;'>ThermoEcsa©2024</p>
+    </footer>
+
+
+</body>    
+
+
+
+
+
+</html>

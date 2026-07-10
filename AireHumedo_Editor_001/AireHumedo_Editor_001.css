@@ -1,0 +1,80 @@
+/* 
+    Created on : 26 nov. 2019, 23:26:03
+    Author     : Ismael
+*/
+
+.editor-aireHumedo h1 {
+  color: rgb(194, 0, 27);
+}
+
+.editor-aireHumedo table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.editor-aireHumedo thead {
+  background: rgb(110, 110, 110);
+  color: white;
+}
+
+.editor-aireHumedo th,
+.editor-aireHumedo td {
+  padding: 4px 5px;
+}
+
+/* Col 1: Checkbox */
+.editor-aireHumedo thead th:nth-child(1),
+.editor-aireHumedo td:nth-child(1) {
+  width: 8%;
+  text-align: center;
+}
+
+/* Col 2: ID corto */
+.editor-aireHumedo thead th:nth-child(2),
+.editor-aireHumedo td:nth-child(2) {
+  width: 10%;
+  text-align: center;
+}
+
+/* Col 3: Nombre completo de la variable */
+.editor-aireHumedo thead th:nth-child(3),
+.editor-aireHumedo td:nth-child(3) {
+  /* ocupa el espacio restante */
+}
+
+/* Col 4: Valor numérico */
+.editor-aireHumedo thead th:nth-child(4),
+.editor-aireHumedo td:nth-child(4) {
+  width: 22%;
+  text-align: center;
+}
+
+/* Col 5: Unidad */
+.editor-aireHumedo thead th:nth-child(5),
+.editor-aireHumedo td:nth-child(5) {
+  width: 18%;
+  text-align: left;
+}
+
+/* Celda de identificador de variable */
+.var-id {
+  font-weight: 700;
+  font-size: 11px;
+  color: #4338ca;
+  letter-spacing: 0.03em;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.editor-aireHumedo tr:nth-child(2n) {
+  background: white;
+}
+
+.editor-aireHumedo input {
+  width: 100%;
+  color: brown;
+  text-align: right;
+}
+
+.editor-aireHumedo p {
+  color: brown;
+}

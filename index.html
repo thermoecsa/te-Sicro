@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>te-Sicro</title>
+
+    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script type="module">
+
+        import { inicia } from '/index.js';
+       
+        window.addEventListener("load", () => {
+
+         const container1 = document.getElementById('editorEstados');
+         const container2 = document.getElementById('editorAireHumedo');
+         const container3 = document.getElementById('diagramaSicrometrico');
+
+         inicia(container1, container2, container3);
+ 
+        }
+        );
+    </script>
+
+
+</head>
+
+<body>
+    <header class="te-header">
+        <h1 class="te-header-title">Diagrama Sicrométrico (te-Sicro)</h1>
+        <div class="te-header-proyecto">
+            <label for="inp-nombre-proyecto">Nombre del Proyecto:</label>
+            <input type="text" id="inp-nombre-proyecto" value="Diagrama Sicrométrico">
+            <div class="te-proyecto-botones">
+                <button type="button" onclick="document.getElementById('input-cargar-proyecto').click()" title="Cargar Proyecto (.json)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 7.5L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                    </svg>
+                </button>
+                <button type="button" onclick="descargarProyectoSicro()" title="Descargar Proyecto (.json)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+                    </svg>
+                </button>
+                <button type="button" id="btn-config-sicro" title="Configuración del diagrama">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+                    </svg>
+                </button>
+                <input type="file" id="input-cargar-proyecto" accept="application/json,.json" style="display:none;">
+            </div>
+        </div>
+    </header>
+    <p id="estado-proyecto-sicro" class="te-estado-proyecto"></p>
+    <main>
+        <section id="contenedorPrincipal">
+            <!-- Primera Columna: 3 tarjetas apiladas, todo visible sin pestañas -->
+            <div class="column">
+                <section class="te-panel te-panel-estados">
+                    <h2 class="te-panel-titulo">
+                        Estados
+                        <button type="button" id="btn-nuevo-estado" class="te-panel-btn">+ Nuevo estado</button>
+                    </h2>
+                    <div id="editorEstados" class="te-panel-cuerpo">
+                        <p>Contenido del editor de estados...</p>
+                    </div>
+                </section>
+
+                <section class="te-panel te-panel-procesos">
+                    <h2 class="te-panel-titulo">
+                        Procesos
+                        <button type="button" id="btn-nuevo-proceso" class="te-panel-btn">+ Nuevo proceso</button>
+                    </h2>
+                    <div id="editorProcesos" class="te-panel-cuerpo">
+                        <p class="te-panel-vacio">Aún no hay procesos definidos.</p>
+                    </div>
+                </section>
+
+                <!-- Panel de detalle: se conserva en el código pero no se usa/muestra por ahora -->
+                <section class="te-panel te-panel-detalle" hidden>
+                    <h2 class="te-panel-titulo">Detalle del Estado</h2>
+                    <div id="editorAireHumedo" class="te-panel-cuerpo">
+                        <p>Contenido del editor de aire húmedo...</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Divisor para redimensionar -->
+            <div class="resizer" id="resizer"></div>
+
+            <!-- Segunda Columna: solo el diagrama -->
+            <div class="column" id="sicro">
+                <div id="diagramaSicrometrico">
+                    <h2>Diagrama</h2>
+                    <p>Contenido del diagrama..</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="te-legal-footer">
+        <p style='color: #9D162E;'>Diagrama Sicrométrico. Versión 2.0 (enero/2025)</p>
+        <p>© 2026 ThermoEcsa. Todos los derechos reservados.</p>
+        <p>Autor: Ismael Rodríguez Maestre</p>
+    </footer>
+
+    <script>
+        // ── Procesos: transformación entre 2 estados (calentamiento, enfriamiento, deshumidificación...) ──
+        let procesosData = []; // [{ origen, destino, color, estilo }]
+        const COLORES_PROCESO = ['#9D162E', '#2563eb', '#059669', '#d97706', '#7c3aed', '#0891b2'];
+
+        function clasificarProceso(dT, dW) {
+            const eps = 0.01;
+            if (Math.abs(dT) < eps && Math.abs(dW) < eps) return 'Sin cambio';
+            if (Math.abs(dW) < eps) return dT > 0 ? 'Calentamiento sensible' : 'Enfriamiento sensible';
+            if (Math.abs(dT) < eps) return dW > 0 ? 'Humidificación' : 'Deshumidificación';
+            if (dT > 0 && dW > 0) return 'Calentamiento y humidificación';
+            if (dT > 0 && dW < 0) return 'Calentamiento y deshumidificación';
+            if (dT < 0 && dW > 0) return 'Enfriamiento y humidificación';
+            return 'Enfriamiento y deshumidificación';
+        }
+
+        function renderProcesos() {
+            const cont = document.getElementById('editorProcesos');
+            const estados = window.__sicroApp ? window.__sicroApp.stateManager.getStates() : [];
+
+            // Descartar procesos cuyo estado de origen/destino ya no exista (se borró el estado)
+            procesosData = procesosData.filter(p => estados.includes(p.origen) && estados.includes(p.destino));
+
+            if (window.__sicroApp && window.__sicroApp.sicro) {
+                window.__sicroApp.sicro.actualizarProcesos(procesosData);
+            }
+
+            if (procesosData.length === 0) {
+                cont.innerHTML = '<p class="te-panel-vacio">Aún no hay procesos definidos.</p>';
+                return;
+            }
+
+            const opciones = (seleccionado) => estados.map(e =>
+                `<option value="${e.getName()}" ${e === seleccionado ? 'selected' : ''}>${e.getName()}</option>`
+            ).join('');
+
+            const filas = procesosData.map((p, i) => {
+                const ah1 = p.origen.getAireHumedo(), ah2 = p.destino.getAireHumedo();
+                const T1 = ah1.get('T'), T2 = ah2.get('T');
+                const W1 = ah1.get('W'), W2 = ah2.get('W');
+                const dT = T2 - T1, dW = W2 - W1;
+                const hTotal = ah2.get('H') - ah1.get('H');
+                const hSensible = ah1.entalpia(T2, W1) - ah1.entalpia(T1, W1);
+                const hLatente = hTotal - hSensible;
+                const tipo = clasificarProceso(dT, dW);
+                return `
+                <tr>
+                    <td>
+                        <select class="sel-origen" data-i="${i}">${opciones(p.origen)}</select>
+                        →
+                        <select class="sel-destino" data-i="${i}">${opciones(p.destino)}</select>
+                    </td>
+                    <td class="proceso-tipo">${tipo}</td>
+                    <td>${dT.toFixed(1)}</td>
+                    <td>${dW.toFixed(2)}</td>
+                    <td>${hSensible.toFixed(2)}</td>
+                    <td>${hLatente.toFixed(2)}</td>
+                    <td>${hTotal.toFixed(2)}</td>
+                    <td><input type="color" class="sel-color-proceso" data-i="${i}" value="${p.color}" title="Color de la línea"></td>
+                    <td>
+                        <select class="sel-estilo-proceso" data-i="${i}" title="Tipo de línea">
+                            <option value="solida" ${p.estilo === 'solida' ? 'selected' : ''}>─── Sólida</option>
+                            <option value="discontinua" ${p.estilo === 'discontinua' ? 'selected' : ''}>- - - Discontinua</option>
+                            <option value="punteada" ${p.estilo === 'punteada' ? 'selected' : ''}>··· Punteada</option>
+                        </select>
+                    </td>
+                    <td><button type="button" class="btn-borrar-proceso" data-i="${i}" title="Eliminar proceso">✕</button></td>
+                </tr>`;
+            }).join('');
+
+            cont.innerHTML = `
+                <table class="tabla-procesos">
+                    <thead>
+                        <tr>
+                            <th>Origen → Destino</th>
+                            <th title="Tipo de proceso (detectado automáticamente)">Tipo</th>
+                            <th title="Variación de temperatura seca">ΔT [ºC]</th>
+                            <th title="Variación de humedad absoluta">ΔW [gr/kg]</th>
+                            <th title="Calor sensible">Q sens. [kJ/kg]</th>
+                            <th title="Calor latente">Q lat. [kJ/kg]</th>
+                            <th title="Calor total">Q total [kJ/kg]</th>
+                            <th title="Color de la línea en el diagrama">Color</th>
+                            <th title="Tipo de línea">Línea</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>${filas}</tbody>
+                </table>
+            `;
+
+            cont.querySelectorAll('.sel-origen').forEach(sel => sel.addEventListener('change', (e) => {
+                const i = Number(e.target.dataset.i);
+                procesosData[i].origen = estados.find(s => s.getName() === e.target.value);
+                renderProcesos();
+            }));
+            cont.querySelectorAll('.sel-destino').forEach(sel => sel.addEventListener('change', (e) => {
+                const i = Number(e.target.dataset.i);
+                procesosData[i].destino = estados.find(s => s.getName() === e.target.value);
+                renderProcesos();
+            }));
+            cont.querySelectorAll('.sel-color-proceso').forEach(inp => inp.addEventListener('input', (e) => {
+                procesosData[Number(e.target.dataset.i)].color = e.target.value;
+                if (window.__sicroApp && window.__sicroApp.sicro) window.__sicroApp.sicro.actualizarProcesos(procesosData);
+            }));
+            cont.querySelectorAll('.sel-estilo-proceso').forEach(sel => sel.addEventListener('change', (e) => {
+                procesosData[Number(e.target.dataset.i)].estilo = e.target.value;
+                if (window.__sicroApp && window.__sicroApp.sicro) window.__sicroApp.sicro.actualizarProcesos(procesosData);
+            }));
+            cont.querySelectorAll('.btn-borrar-proceso').forEach(btn => btn.addEventListener('click', (e) => {
+                procesosData.splice(Number(e.target.dataset.i), 1);
+                renderProcesos();
+            }));
+        }
+
+        document.getElementById('btn-nuevo-proceso').addEventListener('click', () => {
+            if (!window.__sicroApp) return;
+            const estados = window.__sicroApp.stateManager.getStates();
+            if (estados.length < 2) {
+                mostrarEstadoProyectoSicro('Necesitas al menos 2 estados para crear un proceso.', true);
+                return;
+            }
+            const color = COLORES_PROCESO[procesosData.length % COLORES_PROCESO.length];
+            procesosData.push({ origen: estados[0], destino: estados[1], color, estilo: 'solida' });
+            renderProcesos();
+        });
+
+        document.getElementById('btn-nuevo-estado').addEventListener('click', () => {
+            if (window.__sicroApp) window.__sicroApp.tablaEstados.addEstado();
+        });
+
+        document.getElementById('btn-config-sicro').addEventListener('click', () => {
+            if (window.__sicroApp) window.__sicroApp.modalConfig.open();
+        });
+
+        function mostrarEstadoProyectoSicro(mensaje, esError) {
+            const el = document.getElementById('estado-proyecto-sicro');
+            if (!el) return;
+            el.textContent = mensaje;
+            el.style.color = esError ? '#dc2626' : '#059669';
+            clearTimeout(mostrarEstadoProyectoSicro._t);
+            mostrarEstadoProyectoSicro._t = setTimeout(() => { el.textContent = ''; }, 4000);
+        }
+
+        function construirProyectoSicro() {
+            const nombre = document.getElementById('inp-nombre-proyecto').value;
+            const estados = window.__sicroApp.stateManager.getStates().map((e) => ({
+                name: e.getName(),
+                T: e.getAireHumedo().get('T'),
+                Hr: e.getAireHumedo().get('HR'),
+                color: e.getColor(),
+                visible: e.getVisible(),
+                icon: e.getIcon()
+            }));
+            const config = JSON.parse(JSON.stringify(window.__sicroApp.configSicro));
+            return { tipo: 'proyecto-sicro', version: 1, nombreProyecto: nombre, estados: estados, config: config };
+        }
+
+        function descargarProyectoSicro() {
+            if (!window.__sicroApp) { mostrarEstadoProyectoSicro('La aplicación todavía se está cargando, espera un momento.', true); return; }
+            const proyecto = construirProyectoSicro();
+            const blob = new Blob([JSON.stringify(proyecto, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const nombreArchivo = (proyecto.nombreProyecto || 'proyecto-sicro').trim().replace(/[^a-z0-9]+/gi, '_');
+            a.download = `${nombreArchivo || 'proyecto-sicro'}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function aplicarProyectoSicro(proyecto) {
+            if (!proyecto || proyecto.tipo !== 'proyecto-sicro') {
+                mostrarEstadoProyectoSicro('El archivo seleccionado no es un proyecto válido de este diagrama.', true);
+                return;
+            }
+            document.getElementById('inp-nombre-proyecto').value = proyecto.nombreProyecto || '';
+
+            // Restaurar la configuración (presión, ejes, líneas) ANTES de recrear los estados,
+            // para que cada uno nazca ya con la presión global correcta.
+            if (proyecto.config) {
+                const config = window.__sicroApp.configSicro;
+                if (typeof proyecto.config.presionAbsoluta === 'number') config.presionAbsoluta = proyecto.config.presionAbsoluta;
+                if (proyecto.config.ejes) {
+                    if (proyecto.config.ejes.t) Object.assign(config.ejes.t, proyecto.config.ejes.t);
+                    if (proyecto.config.ejes.w) Object.assign(config.ejes.w, proyecto.config.ejes.w);
+                }
+                if (proyecto.config.hr) Object.assign(config.hr, proyecto.config.hr);
+                if (proyecto.config.th) Object.assign(config.th, proyecto.config.th);
+                if (proyecto.config.h) Object.assign(config.h, proyecto.config.h);
+                window.__sicroApp.sicro.restablecerZoom();
+            }
+
+            const sm = window.__sicroApp.stateManager;
+            sm.states.length = 0;
+            (proyecto.estados || []).forEach((e) => {
+                const nuevo = sm.addState();
+                nuevo.setName(e.name);
+                nuevo.getAireHumedo().setEstado('T', e.T, 'HR', e.Hr);
+                nuevo.setColor(e.color);
+                nuevo.setVisible(e.visible);
+                nuevo.setIcon(e.icon);
+            });
+            window.__sicroApp.renderAll();
+            mostrarEstadoProyectoSicro(`✓ Proyecto "${proyecto.nombreProyecto || ''}" cargado.`, false);
+        }
+
+        document.getElementById('input-cargar-proyecto').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    aplicarProyectoSicro(JSON.parse(ev.target.result));
+                } catch (err) {
+                    mostrarEstadoProyectoSicro('El archivo seleccionado no es un JSON válido.', true);
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        });
+    </script>
+</body>
+
+
+</html>

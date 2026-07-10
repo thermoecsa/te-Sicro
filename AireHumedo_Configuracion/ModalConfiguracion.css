@@ -1,0 +1,276 @@
+/* Modal de configuración del diagrama sicrométrico — mismo lenguaje visual que el resto de la app */
+
+.te-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.te-modal-overlay.te-modal-abierto {
+    opacity: 1;
+}
+
+.te-modal-overlay[hidden] {
+    display: none;
+}
+
+.te-modal {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    width: 90%;
+    max-width: 560px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.96);
+    transition: transform 0.15s ease;
+}
+
+.te-modal-overlay.te-modal-abierto .te-modal {
+    transform: scale(1);
+}
+
+.te-modal-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 1rem;
+    background: #9D162E;
+    color: white;
+    flex-shrink: 0;
+}
+
+.te-modal-titulo {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.te-modal-cerrar {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    border-radius: 0.35rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+.te-modal-cerrar:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.te-modal-tabs {
+    display: flex;
+    gap: 0.35rem;
+    padding: 0.6rem 1rem 0;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+.te-modal-tab {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-bottom: none;
+    border-radius: 0.4rem 0.4rem 0 0;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.te-modal-tab.te-tab-activa {
+    background: white;
+    color: #9D162E;
+    border-color: #cbd5e1;
+    position: relative;
+    top: 1px;
+}
+
+.te-modal-cuerpo {
+    padding: 1rem;
+    overflow: auto;
+    flex: 1 1 auto;
+}
+
+.te-modal-seccion {
+    margin-bottom: 1.1rem;
+}
+
+.te-modal-seccion:last-child {
+    margin-bottom: 0;
+}
+
+.te-modal-seccion-titulo {
+    margin: 0 0 0.5rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+}
+
+.te-modal-campos {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem 0.9rem;
+}
+
+.te-modal-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.te-modal-campo label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.te-modal-campo input[type="number"] {
+    border: 1px solid #cbd5e1;
+    border-radius: 0.4rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.78rem;
+    color: #1e293b;
+}
+
+.te-modal-campo input[type="number"]:focus {
+    outline: none;
+    border-color: #9D162E;
+}
+
+.te-modal-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #475569;
+    grid-column: 1 / -1;
+}
+
+/* Filas "una línea/eje por fila": checkbox (ver) | nombre | valores numéricos | color */
+.te-modal-filas-lineas,
+.te-modal-filas-ejes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.te-modal-fila-linea,
+.te-modal-fila-eje {
+    display: grid;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.4rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.4rem;
+    background: #f8fafc;
+}
+
+.te-modal-fila-linea {
+    grid-template-columns: 1.4rem 1fr 4.5rem 2.4rem;
+}
+
+.te-modal-fila-eje {
+    grid-template-columns: 1.4rem 1fr 3.6rem 3.6rem 3.4rem 2.4rem;
+}
+
+.te-modal-fila-linea-cabecera,
+.te-modal-fila-eje-cabecera {
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #94a3b8;
+    border: none;
+    background: none;
+    padding: 0 0.4rem;
+}
+
+.te-modal-fila-linea input[type="checkbox"],
+.te-modal-fila-eje input[type="checkbox"] {
+    justify-self: center;
+}
+
+.te-modal-fila-nombre {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.te-modal-fila-linea input[type="number"],
+.te-modal-fila-eje input[type="number"] {
+    border: 1px solid #cbd5e1;
+    border-radius: 0.35rem;
+    padding: 0.25rem 0.35rem;
+    font-size: 0.75rem;
+    width: 100%;
+}
+
+.te-modal-fila-linea input[type="color"],
+.te-modal-fila-eje input[type="color"] {
+    width: 2.2rem;
+    height: 1.6rem;
+    padding: 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.35rem;
+    cursor: pointer;
+}
+
+.te-modal-pie {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.7rem 1rem;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+    flex-shrink: 0;
+}
+
+.te-modal-btn {
+    border-radius: 0.5rem;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.te-modal-btn-secundario {
+    background: white;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+.te-modal-btn-secundario:hover {
+    background: #f1f5f9;
+}
+
+.te-modal-btn-primario {
+    background: #9D162E;
+    border: 1px solid #9D162E;
+    color: white;
+}
+
+.te-modal-btn-primario:hover {
+    background: #7a1024;
+}

@@ -1,0 +1,17 @@
+
+.ContenedorCanvas {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  background-color: #9D162E;
+
+}
+
+/* Los <canvas> son "inline" por defecto, lo que añade unos px de hueco bajo su línea base
+   (espacio para descendentes de texto) — eso es lo que hacía que el contenedor necesitara
+   barra de scroll aunque el buffer del canvas coincidiera con su tamaño. */
+#teDiagramaSicrometrico {
+  display: block;
+}
