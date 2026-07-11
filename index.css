@@ -36,19 +36,6 @@ body, html {
     gap: 0.6rem;
 }
 
-.te-legal-footer {
-    text-align: center;
-    padding: 0.5rem;
-    font-size: 0.7rem;
-    color: #94a3b8;
-    border-top: 1px solid #e2e8f0;
-    background: white;
-}
-
-.te-legal-footer p {
-    margin: 0.1rem 0;
-}
-
 .te-header-title {
     margin: 0;
     font-size: 1.25rem;
